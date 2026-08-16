@@ -3,6 +3,31 @@
   "version": "0.1.0",
   "type": "module",
   "description": "dsh 移动接入网关的 Cloudflare Workers 部署形态(配对鉴权 + HTTP/WS 中转,协议与 Rust 版 dsh-mobile-gateway 同构)",
+  "cloudflare": {
+    "bindings": {
+      "JWT_SECRET": {
+        "description": "**必填**。设备令牌签名密钥。终端运行 `openssl rand -hex 32` 生成后粘贴。"
+      },
+      "ADMIN_KEY": {
+        "description": "**必填**。管理密钥:Mac 侧配对工具 `scripts/pair.mjs` 凭它调用管理面,等价于自建版的服务器 ssh 权限。同样用 `openssl rand -hex 32` 生成,与 JWT_SECRET 用不同的值。"
+      },
+      "TUNNEL_HOST": {
+        "description": "**必填**。cloudflared 隧道的公网主机名(如 `mac.example.com`),指向你 Mac 上的 dsh。创建方式见 [README「Mac 侧:cloudflared 隧道」](https://github.com/iptton-ai/dsh-gateway-worker#mac-侧cloudflared-隧道)。"
+      },
+      "CF_ACCESS_CLIENT_ID": {
+        "description": "可选。用 Cloudflare Access(service token)保护隧道主机名时的 ID 半对;默认仅靠主机名不可猜测性防护,可留空。"
+      },
+      "CF_ACCESS_CLIENT_SECRET": {
+        "description": "可选。Access service token 的 SECRET 半对(与上面的 ID 配对);不用 Access 就留空。"
+      },
+      "MAX_UPLOAD_BYTES": {
+        "description": "单请求体积上限(字节),默认 100MiB。注意 CF 代理按账户计划硬顶:Free/Pro **100MB**、Business 200MB,大附件场景请用 [Rust 版自建网关](https://github.com/iptton-ai/dsh-mobile-gateway)。"
+      },
+      "TOKEN_TTL_DAYS": {
+        "description": "设备令牌有效期(天),默认 30。到期后重新配对。"
+      }
+    }
+  },
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
