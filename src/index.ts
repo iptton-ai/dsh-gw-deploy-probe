@@ -363,12 +363,20 @@ function forwardableHeaders(source: Headers, drop: Set<string>): Headers {
   return out;
 }
 
+/** CF 控制台复制 service token 时给的是整行头(`CF-Access-Client-Secret: xxx`),
+ *  用户容易连前缀一起粘贴 —— 这里容错剥掉,只留值。 */
+export function accessHeaderValue(raw: string): string {
+  const trimmed = raw.trim();
+  const m = trimmed.match(/^CF-Access-Client-(?:Id|Secret):\s*(.+)$/i);
+  return m ? m[1].trim() : trimmed;
+}
+
 function upstreamHeaders(env: Env, base: Headers): Headers {
   const headers = new Headers(base);
   headers.delete("authorization"); // 网关令牌不下传给 dsh
   if (env.CF_ACCESS_CLIENT_ID && env.CF_ACCESS_CLIENT_SECRET) {
-    headers.set("cf-access-client-id", env.CF_ACCESS_CLIENT_ID);
-    headers.set("cf-access-client-secret", env.CF_ACCESS_CLIENT_SECRET);
+    headers.set("cf-access-client-id", accessHeaderValue(env.CF_ACCESS_CLIENT_ID));
+    headers.set("cf-access-client-secret", accessHeaderValue(env.CF_ACCESS_CLIENT_SECRET));
   }
   return headers;
 }

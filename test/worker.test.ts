@@ -4,6 +4,7 @@
 import { SELF, env } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
 import { Registry } from "../src/registry";
+import { accessHeaderValue } from "../src/index";
 
 declare module "cloudflare:test" {
   interface ProvidedEnv {
@@ -60,6 +61,14 @@ function decodeJwtPayload(token: string): Record<string, unknown> {
 }
 
 describe("healthz 与落地页", () => {
+  it("accessHeaderValue 容错:剥掉控制台整行复制的前缀,只留值", () => {
+    expect(accessHeaderValue("CF-Access-Client-Secret: abcd1234")).toBe("abcd1234");
+    expect(accessHeaderValue("CF-Access-Client-Id: id5678")).toBe("id5678");
+    expect(accessHeaderValue("cf-access-client-secret: abcd1234")).toBe("abcd1234");
+    expect(accessHeaderValue("  abcd1234  ")).toBe("abcd1234");
+    expect(accessHeaderValue("abcd1234")).toBe("abcd1234");
+  });
+
   it("healthz 上报 ok + max_upload_bytes 能力", async () => {
     const resp = await SELF.fetch("https://example.com/healthz");
     expect(resp.status).toBe(200);
