@@ -521,7 +521,7 @@ export default {
     if (request.method === "GET" && path === "/pair") return pairPage();
     if (request.method === "GET" && path === "/healthz") return healthz(request, env);
     if (request.method === "POST" && path === "/auth/login") {
-      // CF 形态仅配对(密码兜底依赖 argon2,Workers 无原生实现;主链路 Rust 版保留)。
+      // 密码登录已从两版移除(仅配对);保留端点只为给老客户端一个明确的 403 指路。
       return err(403, "password login disabled; use pairing");
     }
 

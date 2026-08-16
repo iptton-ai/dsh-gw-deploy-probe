@@ -24,8 +24,8 @@ DeepSeek Harness 移动接入网关的 **Cloudflare Workers 部署形态**:没�
                                     (--http-host-header 127.0.0.1:<端口>)
 ```
 
-- **鉴权**:仅配对(双向亮码防抢注,令牌 30 天、可吊销);与 Rust 版一致,
-  密码登录在 Workers 形态恒禁用(`/auth/login` → 403)。
+- **鉴权**:仅配对(双向亮码防抢注,令牌 30 天、可吊销);密码登录已从两版移除,
+  Workers 形态对遗留的 `/auth/login` 恒回 403 指路配对。
 - **中转**:HTTP 流式透传 + WebSocket 101 直通(events.mux 逐帧不耗 Worker CPU);
   dsh↔LLM 供应商流量不经 Cloudflare。
 - **存储**:单个 Durable Object(SQLite 后端,免费档即可用),持有令牌/配对/限速
@@ -119,12 +119,11 @@ node scripts/revoke.mjs <jti>     # 吊销
 
 ## 与 Rust 版对比
 
-| | dsh-gateway-worker(本仓库) | dsh-mobile-gateway(Rust) |
+| | dsh-gateway-worker(本仓库) | [dsh-mobile-gateway](https://github.com/iptton-ai/dsh-mobile-gateway)(Rust) |
 |---|---|---|
 | 前置条件 | CF 账号 + 域名(免费档可用) | 一台服务器(nginx + systemd) |
 | 部署 | Deploy Button 一键 + cloudflared | docker compose / systemd |
 | Mac 侧隧道 | cloudflared(出站) | SSH 反向隧道 |
-| 密码登录兜底 | ✗(仅配对) | ✓(argon2,可选) |
 | 请求体上限 | 100/200MB(账户计划) | 自定(默认对齐 dsh 160MiB) |
 | 大陆访问质量 | 取决于域名与边缘调度 | 服务器在哪就在哪 |
 | 适合 | 无服务器个人用户、海外链路 | 自有 VPS、大附件、完全自控 |

@@ -289,7 +289,7 @@ describe("管理面(ADMIN_KEY 信任根)", () => {
 });
 
 describe("鉴权与中转", () => {
-  it("密码登录恒禁用(CF 形态仅配对)", async () => {
+  it("遗留 /auth/login 恒 403 指路配对(密码登录已从两版移除)", async () => {
     const resp = await SELF.fetch("https://example.com/auth/login", {
       method: "POST",
       headers: baseHeaders(),
