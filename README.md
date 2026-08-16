@@ -37,6 +37,17 @@ DeepSeek Harness 移动接入网关的 **Cloudflare Workers 部署形态**:没�
 
 ## 一键部署
 
+三种方式任选:
+
+- **A. Deploy to Cloudflare 按钮**(下文,最省事,剩余几步照 README 手工);
+- **B. 命令行 wrangler**:`git clone` → 改 `wrangler.jsonc` → `npx wrangler deploy`;
+- **C. 让 AI 代理替你部署**:把 [AGENT-DEPLOY.md](AGENT-DEPLOY.md) 整个文件发给
+  任何能执行命令的代理(Claude Code / ZCode / Codex…)。它会把 Worker、自定义域名、
+  cloudflared 隧道(含 Host 改写)、Access 加固全部用 API/命令行完成,只在需要
+  决策时问你。人类唯一的准备工作:照该文件「阶段 0」创建一张 API Token。
+
+### 方式 A:Deploy Button 详细步骤
+
 1. 点上面的 **Deploy to Cloudflare** 按钮(CF 会把本仓库克隆进你的账号并接好 CI,
    push 即自动重部署);
 2. 部署界面填变量(密钥项来自 `.dev.vars.example`,配置项来自 `wrangler.jsonc`;
