@@ -114,13 +114,19 @@ async function readJson<T>(request: Request): Promise<T | null> {
 
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
-  // Workers 的 crypto.subtle 扩展;长度已对齐。
   const enc = new TextEncoder();
+  const toBuffer = (s: string): ArrayBuffer => {
+    const bytes = enc.encode(s);
+    const out = new ArrayBuffer(bytes.byteLength);
+    new Uint8Array(out).set(bytes);
+    return out;
+  };
+  // Workers 的 crypto.subtle 扩展;长度已对齐。
   return (
     crypto as unknown as {
       subtle: { timingSafeEqual(x: ArrayBuffer, y: ArrayBuffer): boolean };
     }
-  ).subtle.timingSafeEqual(enc.encode(a), enc.encode(b));
+  ).subtle.timingSafeEqual(toBuffer(a), toBuffer(b));
 }
 
 // ── 配对面(公开)──────────────────────────────────────────────────────

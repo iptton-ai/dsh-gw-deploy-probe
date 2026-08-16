@@ -131,11 +131,11 @@ node scripts/revoke.mjs <jti>     # 吊销
 ## 开发
 
 ```bash
-pnpm install        # 或 npm install
-pnpm test           # 17 项集成测试(vitest-pool-workers,DO 真实运行;配置见 wrangler.test.jsonc)
-pnpm typecheck
+npm install          # 仓库带 package-lock.json + .npmrc(legacy-peer-deps),CI 同路径
+npm test             # 18 项集成测试(vitest-pool-workers,DO 真实运行;配置见 wrangler.test.jsonc)
+npm run typecheck
 cp .dev.vars.example .dev.vars && vi .dev.vars   # 本地开发密钥
-npx wrangler dev    # 本地起 Worker(:8787)
+npx wrangler dev     # 本地起 Worker(:8787)
 ```
 
 MIT License.
