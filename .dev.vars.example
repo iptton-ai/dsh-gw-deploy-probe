@@ -1,0 +1,8 @@
+# Worker secrets(Deploy Button 部署界面会提示逐项填写;本地开发复制为 .dev.vars)。
+# 生成:openssl rand -hex 32
+JWT_SECRET=
+# 管理密钥:Mac 侧 scripts/pair.mjs 凭它调用 /admin/pair/*(信任根,强随机)。
+ADMIN_KEY=
+# 可选:用 Cloudflare Access 保护隧道主机名时,service token 的 SECRET 半对
+# (ID 半对填在 wrangler.jsonc 的 vars 里)。不用 Access 就留空。
+CF_ACCESS_CLIENT_SECRET=

@@ -1,0 +1,23 @@
+{
+  "name": "dsh-gateway-worker",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "dsh 移动接入网关的 Cloudflare Workers 部署形态(配对鉴权 + HTTP/WS 中转,协议与 Rust 版 dsh-mobile-gateway 同构)",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.8.19",
+    "@cloudflare/workers-types": "^4.20250810.0",
+    "@types/qrcode": "^1.5.5",
+    "typescript": "^5.5.4",
+    "vitest": "3.1.4",
+    "wrangler": "^4.28.0"
+  }
+}

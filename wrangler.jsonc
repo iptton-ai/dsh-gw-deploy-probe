@@ -1,0 +1,27 @@
+// dsh-gateway-worker —— dsh 移动接入网关的 Cloudflare Workers 部署形态。
+// 协议与 Rust 版(dsh-mobile-gateway)同构:配对鉴权 + HTTP 流式/WS 中转,
+// 手机 App(singleman)零改动直连;上游从「SSH 反向隧道」换成 cloudflared。
+//
+// Deploy Button 部署界面会引导填写 [vars] 与 .dev.vars.example 里的密钥。
+{
+  "name": "dsh-gateway-worker",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-04-01",
+
+  // 普通配置(部署界面可改):上游隧道主机名、体积上限、令牌有效期。
+  // Access service token 的 ID 半公开(标识用);SECRET 半对放 .dev.vars.example。
+  "vars": {
+    "TUNNEL_HOST": "",
+    "CF_ACCESS_CLIENT_ID": "",
+    "MAX_UPLOAD_BYTES": "104857600",
+    "TOKEN_TTL_DAYS": "30"
+  },
+
+  // 状态存单个 Durable Object(SQLite 后端,免费档可用),零账号级资源 → 可一键部署。
+  "durable_objects": {
+    "bindings": [{ "name": "REGISTRY", "class_name": "Registry" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Registry"] }],
+
+  "observability": { "enabled": true }
+}

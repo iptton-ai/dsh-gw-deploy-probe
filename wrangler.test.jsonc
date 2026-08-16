@@ -1,0 +1,19 @@
+// 测试专用配置(vitest-pool-workers 专用;Deploy Button / wrangler deploy 只认
+// wrangler.toml|jsonc|json 精确名,不会读这个文件)。与 wrangler.jsonc 的差异:
+// 注入测试密钥,MAX_UPLOAD_BYTES 调小便于触发 413 分支。
+{
+  "name": "dsh-gateway-worker-test",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-04-01",
+  "vars": {
+    "JWT_SECRET": "test-jwt-secret-0123456789abcdef",
+    "ADMIN_KEY": "test-admin-key-0123456789abcdef",
+    "TUNNEL_HOST": "tunnel.invalid.example",
+    "MAX_UPLOAD_BYTES": "16",
+    "TOKEN_TTL_DAYS": "30"
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "REGISTRY", "class_name": "Registry" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Registry"] }]
+}
