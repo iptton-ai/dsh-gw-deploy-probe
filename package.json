@@ -15,10 +15,10 @@
         "description": "**必填**。cloudflared 隧道的公网主机名(如 `mac.example.com`),指向你 Mac 上的 dsh。创建方式见 [README「Mac 侧:cloudflared 隧道」](https://github.com/iptton-ai/dsh-gateway-worker#mac-侧cloudflared-隧道)。"
       },
       "CF_ACCESS_CLIENT_ID": {
-        "description": "可选。用 Cloudflare Access(service token)保护隧道主机名时的 ID 半对;默认仅靠主机名不可猜测性防护,可留空。"
+        "description": "可选加固:防止有人猜到隧道域名后绕过网关直连你的 dsh。获取:打开 [one.dash.cloudflare.com](https://one.dash.cloudflare.com/) → **Access → Service Tokens → Create Service Token**,复制 ID 填这里;再到 **Access → Applications → Add → Self-hosted**,域名填隧道主机名(与 `TUNNEL_HOST` 相同),策略 Action 选 **Service Auth**、Include 选刚建的 token。不用 Access 可留空(此时仅靠长随机子域名保密防护)。"
       },
       "CF_ACCESS_CLIENT_SECRET": {
-        "description": "可选。Access service token 的 SECRET 半对(与上面的 ID 配对);不用 Access 就留空。"
+        "description": "可选。与 `CF_ACCESS_CLIENT_ID` 同一个 service token 的 **SECRET 半对**(类密码)——创建 token 时**只显示一次**,务必当场复制;获取步骤见 `CF_ACCESS_CLIENT_ID` 的说明。不用 Access 留空。"
       },
       "MAX_UPLOAD_BYTES": {
         "description": "单请求体积上限(字节),默认 100MiB。注意 CF 代理按账户计划硬顶:Free/Pro **100MB**、Business 200MB,大附件场景请用 [Rust 版自建网关](https://github.com/iptton-ai/dsh-mobile-gateway)。"

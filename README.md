@@ -71,6 +71,26 @@ cloudflared 隧道,Public Hostname 指向本机 dsh:
 Mac 上安装:`cloudflared service install <隧道 token>`(或用
 [dsh-mobile](https://github.com/iptton-ai/dsh-mobile) 插件托管隧道生命周期)。
 
+## 可选加固:用 Cloudflare Access 保护隧道主机名
+
+隧道主机名(如 `mac.example.com`)是公开 URL——谁知道域名谁就能**绕过网关直连
+dsh**,且 cloudflared 的本机回环连接恰好满足 dsh 信任围栏,等于拿到完整本地特权。
+默认仅靠「长随机子域名不可猜测」防护;建议用 Access(Zero Trust 免费档)上锁,
+让全世界只有本 Worker 能访问隧道:
+
+1. 打开 [one.dash.cloudflare.com](https://one.dash.cloudflare.com/) →
+   **Access → Service Tokens → Create Service Token**;
+2. 复制 **Client ID** 与 **Client Secret**(Secret 只显示这一次)——即部署时的
+   `CF_ACCESS_CLIENT_ID` / `CF_ACCESS_CLIENT_SECRET` 两个变量;
+3. **Access → Applications → Add a self-hosted application**,域名填隧道主机名
+   (与 `TUNNEL_HOST` 相同);
+4. 给该 Application 加 Policy:Action = **Service Auth**,Include = 刚创建的
+   Service Token,保存。
+
+效果:Worker 每次上游请求自动带凭证通过;其他任何来源(无凭证的 curl/浏览器)
+都会被 302 到 Access 登录页,止步于边缘。轮换:新建 token → 更新 Worker 两个
+变量 → 删旧 token。
+
 ## Mac 侧:配对
 
 ```bash
